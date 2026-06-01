@@ -3,35 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cloud Web App</title>
+    <title>Google Drive</title>
     <style>
-        body, html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            overflow: hidden;
-            background-color: #000;
-        }
-        #app-container {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
+        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #000; font-family: sans-serif; }
+        .launch-btn { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); padding: 15px 30px; font-size: 18px; color: #fff; background: #2563eb; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
+        .launch-btn:hover { background: #1d4ed8; }
     </style>
 </head>
 <body>
 
-    <!-- Embedded web container using a direct mirror -->
-    <iframe id="app-container" src="https://nowgg.nl"></iframe>
+    <!-- A user click is required by browsers to launch isolated sessions -->
+    <button class="launch-btn" onclick="launchGame()">Launch Session</button>
 
     <script>
-        // Automatic fallback handler if the primary container fails to load
-        const frame = document.getElementById('app-container');
-        frame.onerror = function() {
-            console.log("Switching to alternative access mirror...");
-            frame.src = "https://github.io";
-        };
-    </script>
+        function launchGame() {
+            // The core game page frame
+            const pageContent = `
+                <html>
+                <head>
+                    <style>
+                        body,html{margin:0;padding:0;height:100%;overflow:hidden;}
+                        iframe{width:100%;height:100%;border:none;}
+                    </style>
+                </head>
+                <body>
+                    <iframe src="https://nowgg.nl"></iframe>
+                </body>
+                </html>
+            `;
 
+            // Creates a hidden binary blob object to mask the GitHub referrer header
+            const blob = new Blob([pageContent], { type: 'text/html' });
+            const blobURL = URL.createObjectURL(blob);
+
+            // Spawns a clean window instance running on the local browser memory layout
+            const newWin = window.open('about:blank', '_blank');
+            if (newWin) {
+                newWin.location.href = blobURL;
+            } else {
+                alert("Please allow pop-ups for this site to launch the platform.");
+            }
+        }
+    </script>
 </body>
 </html>
