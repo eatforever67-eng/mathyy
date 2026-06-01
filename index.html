@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloud Web App</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+            background-color: #000;
+        }
+        #app-container {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Embedded web container using a direct mirror -->
+    <iframe id="app-container" src="https://nowgg.nl"></iframe>
+
+    <script>
+        // Automatic fallback handler if the primary container fails to load
+        const frame = document.getElementById('app-container');
+        frame.onerror = function() {
+            console.log("Switching to alternative access mirror...");
+            frame.src = "https://github.io";
+        };
+    </script>
+
+</body>
+</html>
