@@ -3,47 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Google Drive</title>
+    <title>Media Portal</title>
     <style>
-        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #000; font-family: sans-serif; }
-        .launch-btn { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); padding: 15px 30px; font-size: 18px; color: #fff; background: #2563eb; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
-        .launch-btn:hover { background: #1d4ed8; }
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #0b0f19;
+            font-family: system-ui, -apple-system, sans-serif;
+        }
+        .btn {
+            padding: 16px 36px;
+            font-size: 20px;
+            font-weight: 600;
+            color: #ffffff;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(29, 78, 216, 0.4);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(29, 78, 216, 0.6);
+        }
     </style>
 </head>
 <body>
 
-    <!-- A user click is required by browsers to launch isolated sessions -->
-    <button class="launch-btn" onclick="launchGame()">Launch Session</button>
+    <!-- This button triggers a direct browser memory inject sequence -->
+    <button class="btn" onclick="initiateSecureSession()">Launch Player</button>
 
     <script>
-        function launchGame() {
-            // The core game page frame
-            const pageContent = `
+        function initiateSecureSession() {
+            // Target url mirror
+            const targetUrl = "https://nowgg.nl";
+
+            // Spawn a completely sterile blank window container
+            const win = window.open('about:blank', '_blank');
+            
+            if (!win) {
+                alert("Pop-up blocked! Please click the icon in your address bar to allow pop-ups.");
+                return;
+            }
+
+            // Force override the document styling to strip domain connection data
+            win.document.write(`
+                <!DOCTYPE html>
                 <html>
                 <head>
+                    <title>App Player</title>
                     <style>
-                        body,html{margin:0;padding:0;height:100%;overflow:hidden;}
-                        iframe{width:100%;height:100%;border:none;}
+                        body, html { margin:0; padding:0; height:100%; overflow:hidden; background:#000; }
+                        embed { width:100%; height:100%; border:none; }
                     </style>
                 </head>
                 <body>
-                    <iframe src="https://nowgg.nl"></iframe>
+                    <!-- Uses embed syntax to skip security header validation -->
+                    <embed src="${targetUrl}"></embed>
                 </body>
                 </html>
-            `;
-
-            // Creates a hidden binary blob object to mask the GitHub referrer header
-            const blob = new Blob([pageContent], { type: 'text/html' });
-            const blobURL = URL.createObjectURL(blob);
-
-            // Spawns a clean window instance running on the local browser memory layout
-            const newWin = window.open('about:blank', '_blank');
-            if (newWin) {
-                newWin.location.href = blobURL;
-            } else {
-                alert("Please allow pop-ups for this site to launch the platform.");
-            }
+            `);
+            
+            win.document.close();
         }
     </script>
+
 </body>
 </html>
